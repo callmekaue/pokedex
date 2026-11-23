@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="40" viewBox="0 0 1600 40">
+<style>@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><linearGradient id="l" x1="0" x2="1">
+  <stop offset="0" stop-color="#C8102E" stop-opacity="0"/><stop offset=".5" stop-color="#C8102E"/><stop offset="1" stop-color="#C8102E" stop-opacity="0"/>
+</linearGradient></defs>
+<rect x="0" y="19" width="1600" height="2" fill="url(#l)"/>
+<circle cx="0" cy="20" r="5" fill="#2F9EE0">
+  <animate attributeName="cx" values="300;1300;300" dur="6s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.9;1" dur="3s" repeatCount="indefinite"/>
+</circle>
+<circle cx="776" cy="20" r="6" fill="#FF5161" stroke="#8E0A20" stroke-width="2.5">
+    <animate attributeName="opacity" values="1;.25;1;1" keyTimes="0;.1;.2;1" dur="3s" begin="0.0s" repeatCount="indefinite"/></circle>
+<circle cx="800" cy="20" r="6" fill="#F2C230" stroke="#8E0A20" stroke-width="2.5">
+    <animate attributeName="opacity" values="1;.25;1;1" keyTimes="0;.1;.2;1" dur="3s" begin="0.35s" repeatCount="indefinite"/></circle>
+<circle cx="824" cy="20" r="6" fill="#5FD068" stroke="#8E0A20" stroke-width="2.5">
+    <animate attributeName="opacity" values="1;.25;1;1" keyTimes="0;.1;.2;1" dur="3s" begin="0.7s" repeatCount="indefinite"/></circle>
+</svg>

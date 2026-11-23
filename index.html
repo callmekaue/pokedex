@@ -1,42 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex</title>
-    
-
-    <link rel="icon" href="favicon-16x16.png">
-    <link rel="stylesheet" href="style.css">
-
-    <script defer src="script.js"></script>
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#c8102e">
+  <title>Pokédex</title>
+  <meta name="description" content="Pokédex com todos os Pokémon até a Geração IX, formas Mega, regionais e Gigantamax.">
+  <link rel="icon" href="favicon-16x16.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Oxanium:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="data/megas.js"></script>
+  <script defer src="music.js"></script>
+  <script defer src="script.js"></script>
 </head>
 <body>
-   <main>
+  <main class="dex">
 
-    <img src="#" class="pokemon__image">
-    <img src="pokedex.png" alt="pokedex" class="pokedex">
+    <!-- Metade esquerda: o aparelho -->
+    <section class="dex__left" aria-label="Visor da Pokédex">
+      <div class="dex__top">
+        <span class="lens" aria-hidden="true"></span>
+        <span class="led led--red" aria-hidden="true"></span>
+        <span class="led led--yellow" aria-hidden="true"></span>
+        <span class="led led--green" aria-hidden="true"></span>
+        <button type="button" class="music-btn" id="btn-music" aria-pressed="false" title="Trilha de fundo original">
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span id="music-label">Ligar música</span>
+        </button>
+      </div>
 
-    <h1 class="pokemon__data">
-     <span class="pokemon__number"></span> -
-     <span class="pokemon__name"></span>
-    </h1>
-    <form class="form">
-        <input 
-        type="search"
-        class="input__search"
-        placeholder="Nome ou número"
-        required
-        />
-    </form>   
-    
-    <div class="buttons">
-        <button class="button btn-prev">&lt; Anterior </button>
-        <button class="button btn-next">Próximo &gt; </button>
+      <div class="screen-frame">
+        <div class="screen" id="screen">
+          <span class="screen__number" id="number">#0000</span>
+          <img id="sprite" class="screen__sprite" alt="" decoding="async">
+          <p class="screen__status" id="status" role="status" aria-live="polite">Carregando...</p>
+        </div>
+        <div class="screen-frame__bottom">
+          <button class="cry" id="btn-cry" type="button" aria-label="Ouvir o grito do Pokémon" title="Ouvir o grito">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+          </button>
+          <span class="speaker" id="speaker" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        </div>
+      </div>
 
-    </div>
+      <div class="controls">
+        <div class="segmented" role="group" aria-label="Estilo da imagem">
+          <button type="button" data-art="animado" aria-pressed="true">Animado</button>
+          <button type="button" data-art="arte" aria-pressed="false" title="Arte oficial">Arte</button>
+          <button type="button" data-art="home" aria-pressed="false">3D</button>
+        </div>
+        <button type="button" class="toggle" id="btn-shiny" aria-pressed="false">Shiny</button>
+      </div>
 
-</main> 
+      <form class="search" id="search" role="search">
+        <label for="search-input" class="search__label">Buscar por nome ou número</label>
+        <div class="search__row">
+          <input id="search-input" type="search" list="pokemon-list" autocomplete="off"
+                 placeholder="Ex.: pikachu ou 25" required>
+          <button type="submit" class="btn btn--dark">Buscar</button>
+        </div>
+        <datalist id="pokemon-list"></datalist>
+      </form>
+
+      <div class="nav">
+        <button type="button" class="btn btn--dark" id="btn-prev" aria-label="Pokémon anterior">&larr; Anterior</button>
+        <button type="button" class="btn btn--dark" id="btn-random">Aleatório</button>
+        <button type="button" class="btn btn--dark" id="btn-next" aria-label="Próximo Pokémon">Próximo &rarr;</button>
+      </div>
+      <p class="hint"><span class="hint__keys">Use as setas do teclado para navegar.</span><span class="hint__touch">Deslize o dedo na tela para trocar de Pokémon.</span></p>
+    </section>
+
+    <span class="hinge" aria-hidden="true"></span>
+
+    <!-- Metade direita: a ficha -->
+    <section class="dex__right" aria-live="polite" aria-busy="true" id="sheet">
+     <div class="sheet">
+      <header class="sheet-head">
+        <h1 class="sheet-head__name" id="name">Pokédex</h1>
+        <p class="sheet-head__genus" id="genus"></p>
+        <ul class="types" id="types"></ul>
+        <ul class="tags" id="tags"></ul>
+      </header>
+
+      <nav class="tabs" id="tabs" aria-label="Seções da ficha">
+        <button type="button" data-tab="sobre" aria-pressed="true">Sobre</button>
+        <button type="button" data-tab="formas" aria-pressed="false">Formas</button>
+        <button type="button" data-tab="batalha" aria-pressed="false">Batalha</button>
+        <button type="button" data-tab="evolucao" aria-pressed="false">Evolução</button>
+        <button type="button" data-tab="fontes" aria-pressed="false">Fontes</button>
+      </nav>
+
+      <section class="block" id="block-forms" data-tab="formas" hidden>
+        <h2>Mega Evoluções e outras formas</h2>
+        <p class="forms-summary" id="forms-summary"></p>
+        <div class="form-info" id="form-info" hidden></div>
+        <div class="form-grid" id="forms"></div>
+      </section>
+
+      <section class="block" data-tab="sobre">
+        <div class="block__title-row">
+          <h2>Descrição</h2>
+          <button type="button" class="link-btn" id="btn-translate" hidden>Traduzir para português</button>
+        </div>
+        <p class="flavor" id="flavor"></p>
+        <p class="flavor-source" id="flavor-source"></p>
+      </section>
+
+      <section class="block" data-tab="sobre">
+        <h2>Dados</h2>
+        <dl class="facts" id="facts"></dl>
+      </section>
+
+      <section class="block" data-tab="batalha">
+        <h2>Atributos base</h2>
+        <table class="stats" id="stats"></table>
+      </section>
+
+      <section class="block" data-tab="batalha">
+        <h2>Fraquezas e resistências</h2>
+        <div id="matchups" class="matchups"></div>
+        <p class="note">Calculado pelos tipos. Habilidades como Levitate podem mudar o resultado.</p>
+      </section>
+
+      <section class="block" data-tab="evolucao">
+        <h2>Evolução</h2>
+        <div class="evo" id="evo"></div>
+      </section>
+
+      <section class="block" data-tab="fontes">
+        <h2>Ver em outras fontes</h2>
+        <ul class="sources" id="sources"></ul>
+      </section>
+     </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    Dados: <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a>,
+    <a href="https://pokemonshowdown.com/" target="_blank" rel="noopener">Pokémon Showdown</a> e
+    <a href="https://github.com/PokeAPI/sprites" target="_blank" rel="noopener">PokeAPI/sprites</a>.
+    Projeto educacional sem vínculo com a Nintendo, Game Freak ou The Pokémon Company.
+  </footer>
 </body>
 </html>
